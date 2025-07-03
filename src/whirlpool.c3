@@ -184,7 +184,7 @@ fn void? Whirlpool.process_block(&self, ulong[] block) @local
         self.hash[$round] = state[$round];
     $endfor
 
-    $for $round = 0; $round < ROUNDS; ++$round :
+    $for var $round = 0; $round < ROUNDS; ++$round :
         var $m = $round % 2;
 
         k[(($m ^ 1) * 8) + 0] = @w_op((&k[$m * 8]), 0) ^ RC[$round];
@@ -193,7 +193,7 @@ fn void? Whirlpool.process_block(&self, ulong[] block) @local
             k[(($m ^ 1) * 8) + $i] = @w_op((&k[$m * 8]), $i);
         $endfor
 
-        $for $i = 0; $i < 8; ++$i :
+        $for var $i = 0; $i < 8; ++$i :
             state[(($m ^ 1) * 8) + $i] = @w_op(&(state[$m * 8]), $i) ^ k[(($m ^ 1) * 8) + $i];
         $endfor
     $endfor
@@ -385,16 +385,16 @@ const char[][] SEQUENTIAL_HASHES = {
 
 fn void sweep_block_size()
 {
-    $foreach $i, $hash : SEQUENTIAL_HASHES :
+    $for var $i = 1; $i < SEQUENTIAL_HASHES.len; ++$i :
     {
-        char[] v = calloc($i+1)[:$i+1];
+        char[] v = calloc($i)[:$i];
         defer free(v.ptr);
 
-        for (usz i = 0; i < $i+1; ++i) v[i] = 'A';
+        for (usz i = 0; i < $i; ++i) v[i] = 'A';
 
         char[HASH_SIZE] result = whirlpool::hash(v)!!;
 
-        test::@check(result[..] == $hash, "Mismatch sequential hash on number (%d).\n", $i);
+        test::@check(result[..] == SEQUENTIAL_HASHES[$i - 1], "Mismatch sequential hash on number (%d).\n", $i);
     }
-    $endforeach
+    $endfor
 }
