@@ -104,7 +104,6 @@ fn void? Whirlpool.update(&self, char[] data)
 }
 
 
-import std::io;
 fn char[HASH_SIZE]? Whirlpool.final(&self)
 {
     char remainder = (char)(self.counter_low & 0x3F);   // if not at an even BLOCK_SIZE, how many bytes are over it
@@ -250,6 +249,9 @@ fn void expected_outputs()
 
 
 // BASH COMMAND:   for x in {1..130}; do eval "for a in {1..$x}; do printf \"A\"; done" | whirlpool-hash - | cut -d' ' -f1; done
+//
+//   ^ This gives a list of WHIRLPOOL hashes for strings of sequential 'A' characters, from 1 of them, to 130 of them in a row.
+//
 const char[][] SEQUENTIAL_HASHES = {
     x'3acb384b67995724469edc254c71f4ffcb699424606bf018254fad2e42ed613bd4a350453498a354a60dd8bd7c2ad141fb4611a7460a8f50841e569749dc32ca',
     x'd7d1b73088b9f09280655abd32509ab2afd2e7786144ade740f5458a192875ae64ce0e08bfa693287822a7cdf5057a7f53c3acd27471749299d4f8e728462711',
